@@ -51,6 +51,8 @@ static CFTypeID CTRubyAnnotationTypeID() {
 }
 
 /**
+ CFColorRef的包装类，用来归档CGColorRef
+ 因为CGColor不是OC类，需要转化为UIColor进行归档
  A wrapper for CGColorRef. Used for Archive/Unarchive/Copy.
  */
 @interface _YYCGColor : NSObject <NSCopying, NSCoding>
@@ -100,6 +102,7 @@ static CFTypeID CTRubyAnnotationTypeID() {
 @end
 
 /**
+ CGImageRef的包装类，用来归档CGImageRef
  A wrapper for CGImageRef. Used for Archive/Unarchive/Copy.
  */
 @interface _YYCGImage : NSObject <NSCoding, NSCopying>
@@ -152,13 +155,15 @@ static CFTypeID CTRubyAnnotationTypeID() {
 
 + (NSData *)archivedDataWithRootObject:(id)rootObject {
     if (!rootObject) return nil;
+    //准备归档数据
     NSMutableData *data = [NSMutableData data];
+    //初始化archiver
     YYTextArchiver *archiver = [[[self class] alloc] initForWritingWithMutableData:data];
     [archiver encodeRootObject:rootObject];
     [archiver finishEncoding];
     return data;
 }
-
+//将归档数据存储到指定路径
 + (BOOL)archiveRootObject:(id)rootObject toFile:(NSString *)path {
     NSData *data = [self archivedDataWithRootObject:rootObject];
     if (!data) return NO;

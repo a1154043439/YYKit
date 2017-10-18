@@ -14,6 +14,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 /**
+ 归档的子类，可以归档 CGColor/CGImage等类型
  A subclass of `NSKeyedArchiver` which implement `NSKeyedArchiverDelegate` protocol.
  
  The archiver can encode the object which contains
