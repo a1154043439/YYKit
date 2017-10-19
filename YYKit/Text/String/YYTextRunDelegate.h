@@ -16,7 +16,30 @@ NS_ASSUME_NONNULL_BEGIN
 
 /**
  Wrapper for CTRunDelegateRef.
+ CTRunDelegateRef的包装类，封装了创建方法，在内部使用callbacks
+ 普通CTRunDelegateRef的使用如下：
+ Example:
  
+ unichar objectReplacementChar           = 0xFFFC;
+ NSString *objectReplacementString       = [NSString stringWithCharacters:&objectReplacementChar length:1];
+ NSMutableAttributedString *attachText   = [[NSMutableAttributedString alloc]initWithString:objectReplacementString];
+ 
+ CTRunDelegateCallbacks callbacks;
+ callbacks.version       = kCTRunDelegateVersion1;
+ callbacks.getAscent     = ascentCallback;
+ callbacks.getDescent    = descentCallback;
+ callbacks.getWidth      = widthCallback;
+ callbacks.dealloc       = deallocCallback;
+ //创建delegate,参数为CTRunDelegateCallbacks和RefCon
+ CTRunDelegateRef delegate = CTRunDelegateCreate(&callbacks, (void *)attachment);
+ //将delegate赋给字典
+ NSDictionary *attr = [NSDictionary dictionaryWithObjectsAndKeys:(__bridge id)delegate,kCTRunDelegateAttributeName, nil];
+ //将指定富文本的字段范围设置该delegate
+ [attachText setAttributes:attr range:NSMakeRange(0, 1)];
+ //释放该delegate
+ CFRelease(delegate);
+ 
+ 包装优化后使用如下
  Example:
  
      YYTextRunDelegate *delegate = [YYTextRunDelegate new];
