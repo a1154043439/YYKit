@@ -27,7 +27,8 @@ static const int block_key;
 - (void)invoke:(id)sender;
 
 @end
-
+// 根据block和events构建target，该target可以在接收到events之后可以自动执行block回调
+// 不用系统的addTarget:action:forControllEvents原因是
 @implementation _YYUIControlBlockTarget
 
 - (id)initWithBlock:(void (^)(id sender))block events:(UIControlEvents)events {
@@ -62,19 +63,24 @@ static const int block_key;
     for (id currentTarget in targets) {
         NSArray *actions = [self actionsForTarget:currentTarget forControlEvent:controlEvents];
         for (NSString *currentAction in actions) {
+            //移除指定手势的action
             [self removeTarget:currentTarget action:NSSelectorFromString(currentAction)
                 forControlEvents:controlEvents];
         }
     }
+    //为当前target的手势添加action
     [self addTarget:target action:action forControlEvents:controlEvents];
 }
 
 - (void)addBlockForControlEvents:(UIControlEvents)controlEvents
                            block:(void (^)(id sender))block {
     if (!controlEvents) return;
+    //先使用参数构建一个_YYUIControlBlockTarget
     _YYUIControlBlockTarget *target = [[_YYUIControlBlockTarget alloc]
                                        initWithBlock:block events:controlEvents];
+    //为target添加响应事件，action参数为invoke: ,
     [self addTarget:target action:@selector(invoke:) forControlEvents:controlEvents];
+    //保存所有有响应事件的target，保存在targetsshu'z中
     NSMutableArray *targets = [self _yy_allUIControlBlockTargets];
     [targets addObject:target];
 }
@@ -92,6 +98,7 @@ static const int block_key;
     NSMutableArray *removes = [NSMutableArray array];
     for (_YYUIControlBlockTarget *target in targets) {
         if (target.events & controlEvents) {
+            //将指定event与events与或后重新加入该targets
             UIControlEvents newEvent = target.events & (~controlEvents);
             if (newEvent) {
                 [self removeTarget:target action:@selector(invoke:) forControlEvents:target.events];

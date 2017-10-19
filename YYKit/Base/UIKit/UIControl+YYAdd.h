@@ -15,6 +15,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 /**
  Provides extensions for `UIControl`.
+ 控件的基类均是UIControl,而UIControl派生自UIView类，所以每个控件都有很多视图的特性
+ 定义UIController的分类
+ 1 方便直接传入Block，不用额外定义方法
+ 2
  */
 @interface UIControl (YYAdd)
 
