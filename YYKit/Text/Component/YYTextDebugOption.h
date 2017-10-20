@@ -19,6 +19,7 @@ NS_ASSUME_NONNULL_BEGIN
  The YYTextDebugTarget protocol defines the method a debug target should implement.
  A debug target can be add to the global container to receive the shared debug
  option changed notification.
+ 定义YYTextDebugTarget协议，用来定义一个debug target应该实施的方法
  */
 @protocol YYTextDebugTarget <NSObject>
 
@@ -37,6 +38,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /**
  The debug option for YYText.
+ YYText的debug选项
  */
 @interface YYTextDebugOption : NSObject <NSCopying>
 @property (nullable, nonatomic, strong) UIColor *baselineColor;      ///< baseline color
